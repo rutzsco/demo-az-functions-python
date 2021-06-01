@@ -3,7 +3,7 @@ trigger: none
 resources:
   pipelines:
   - pipeline: build
-    source: 'Demo ML Routing - API - BUILD'
+    source: 'rutzsco.demo-az-functions-python'
   
 variables:
   vmImageName: 'ubuntu-latest'
@@ -15,8 +15,8 @@ stages:
     stageName: 'CI'
     environment: 'MLR-API-CI'
     azureSubscription: ${{ variables.azureSubscription }}
-    functionAppName: 'demo-ml-routing-api-ci'
-    resourceGroupName: 'demo-ml-routing-api-ci'
-    storageAccountName: 'azmlrapici'
+    functionAppName: 'demo-funtion-python-api-ci'
+    resourceGroupName: 'demo-funtion-python-api-ci'
+    storageAccountName: 'azfpapici'
     region: 'East US'
     packageName: 'App.zip'
