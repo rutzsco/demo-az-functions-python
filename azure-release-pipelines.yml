@@ -15,8 +15,8 @@ stages:
     stageName: 'CI'
     environment: 'MLR-API-CI'
     azureSubscription: ${{ variables.azureSubscription }}
-    functionAppName: 'demo-funtion-python-api-ci'
-    resourceGroupName: 'demo-funtion-python-api-ci'
+    functionAppName: 'demo-function-python-api-ci'
+    resourceGroupName: 'demo-function-python-api-ci'
     storageAccountName: 'azfpapici'
     region: 'East US'
     packageName: 'App.zip'
