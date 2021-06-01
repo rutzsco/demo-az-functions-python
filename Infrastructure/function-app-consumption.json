@@ -1,0 +1,124 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the function app that you wish to create."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for all resources."
+      }
+    },
+    "storageAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Storage Account Name"
+      }
+    },
+    "linuxFxVersion": {
+      "type": "string"
+    },
+    "sku": {
+      "type": "string",
+      "defaultValue": "Dynamic"
+    },
+    "skuCode": {
+      "type": "string",
+      "defaultValue": "Y1"
+    },
+    "workerSize": {
+      "type": "string",
+      "defaultValue": "0"
+    },
+    "workerSizeId": {
+      "type": "string",
+      "defaultValue": "0"
+    },
+    "numberOfWorkers": {
+      "type": "string",
+      "defaultValue": "1"
+    }
+  },
+  "variables": {
+    "hostingPlanName": "[parameters('name')]",
+    "subscriptionId": "[subscription().subscriptionId]",
+    "resourceGroupName": "[resourceGroup().name]"
+  },
+  "resources": [
+    {
+      "apiVersion": "2018-11-01",
+      "name": "[parameters('name')]",
+      "type": "Microsoft.Web/sites",
+      "kind": "functionapp,linux",
+      "location": "[parameters('location')]",
+      "tags": null,
+      "dependsOn": [
+        "[concat('Microsoft.Web/serverfarms/', variables('hostingPlanName'))]",
+        "[concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]"
+      ],
+      "properties": {
+        "name": "[parameters('name')]",
+        "siteConfig": {
+          "appSettings": [
+            {
+              "name": "FUNCTIONS_EXTENSION_VERSION",
+              "value": "~3"
+            },
+            {
+              "name": "FUNCTIONS_WORKER_RUNTIME",
+              "value": "python"
+            },
+            {
+              "name": "AzureWebJobsStorage",
+              "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2019-06-01').keys[0].value,';EndpointSuffix=','core.windows.net')]"
+            }
+          ],
+          "use32BitWorkerProcess": false,
+          "linuxFxVersion": "[parameters('linuxFxVersion')]"
+        },
+        "serverFarmId": "[concat('/subscriptions/', variables('subscriptionId'),'/resourcegroups/', variables('resourceGroupName'), '/providers/Microsoft.Web/serverfarms/', variables('hostingPlanName'))]",
+        "clientAffinityEnabled": false
+      }
+    },
+    {
+      "apiVersion": "2018-11-01",
+      "name": "[variables('hostingPlanName')]",
+      "type": "Microsoft.Web/serverfarms",
+      "location": "[parameters('location')]",
+      "kind": "linux",
+      "tags": null,
+      "dependsOn": [],
+      "properties": {
+        "name": "[variables('hostingPlanName')]",
+        "workerSize": "[parameters('workerSize')]",
+        "workerSizeId": "[parameters('workerSizeId')]",
+        "numberOfWorkers": "[parameters('numberOfWorkers')]",
+        "reserved": true
+      },
+      "sku": {
+        "Tier": "[parameters('sku')]",
+        "Name": "[parameters('skuCode')]"
+      }
+    },
+    {
+      "apiVersion": "2019-06-01",
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[parameters('storageAccountName')]",
+      "location": "[parameters('location')]",
+      "tags": null,
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "properties": {
+        "supportsHttpsTrafficOnly": true,
+        "minimumTlsVersion": "TLS1_2"
+      }
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+trigger: none
+
+resources:
+  pipelines:
+  - pipeline: build
+    source: 'Demo ML Routing - API - BUILD'
+  
+variables:
+  vmImageName: 'ubuntu-latest'
+  azureSubscription: 'Demo Account'
+
+stages:
+- template: azure-release-pipelines-stage-template.yml
+  parameters:
+    stageName: 'CI'
+    environment: 'MLR-API-CI'
+    azureSubscription: ${{ variables.azureSubscription }}
+    functionAppName: 'demo-ml-routing-api-ci'
+    resourceGroupName: 'demo-ml-routing-api-ci'
+    storageAccountName: 'azmlrapici'
+    region: 'East US'
+    packageName: 'App.zip'
