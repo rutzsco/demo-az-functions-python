@@ -27,12 +27,10 @@ param functionWorkerRuntime string = 'python'
 @description('Required for Linux app to represent runtime stack in the format of \'runtime|runtimeVersion\'. For example: \'python|3.9\'')
 param linuxFxVersion string
 
-@description('The zip content url.')
-param packageUri string
+param storageAccountName string
 
 var hostingPlanName = functionAppName
 var applicationInsightsName = functionAppName
-var storageAccountName = '${uniqueString(resourceGroup().id)}azfunctions'
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
   name: storageAccountName
@@ -107,10 +105,6 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
         {
           name: 'FUNCTIONS_WORKER_RUNTIME'
           value: functionWorkerRuntime
-        }
-        {
-          name: 'WEBSITE_RUN_FROM_PACKAGE'
-          value: packageUri
         }
       ]
     }
