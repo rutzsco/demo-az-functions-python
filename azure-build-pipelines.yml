@@ -10,9 +10,9 @@ variables:
 steps:
 - task: UsePythonVersion@0
   inputs:
-    versionSpec: '3.6'
+    versionSpec: '3.11.7'
 - bash: |
-    pip install --target="./.python_packages/lib/python3.6/site-packages" -r ./requirements.txt
+    pip install --target="./.python_packages/lib/python3.11.7/site-packages" -r ./requirements.txt
 
 - task: ArchiveFiles@2
   inputs:
